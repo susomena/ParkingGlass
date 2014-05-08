@@ -29,7 +29,7 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		//setContentView(R.layout.activity_main);
+		// We don't need a layout, in Google Glass we use cards
 		
 		LocationManager manager = (LocationManager) getSystemService(LOCATION_SERVICE);
 		Criteria criteria = new Criteria();
@@ -39,14 +39,14 @@ public class MainActivity extends Activity {
 		Handler handler = new Handler(){
 			@Override
 			public void handleMessage(Message msg) {
-				int plazas = msg.getData().getInt("plazas");
+				int spots = msg.getData().getInt("spots");
 				String name = msg.getData().getString("name");
 				double lat = msg.getData().getDouble("lat");
 				double lon = msg.getData().getDouble("lon");
 				
 				Card card = new Card(MainActivity.this);
 				card.setText(name);
-				card.setFootnote("Plazas libres: "+plazas);
+				card.setFootnote("plazas libres: "+spots);
 				setContentView(card.getView());
 				
 				Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -94,6 +94,7 @@ public class MainActivity extends Activity {
 					
 					int n = 0;
 					
+					// Search the minimum distance
 					for(int i=1; i<array.length(); i++){
 						if(Math.sqrt((l.getLatitude()-lat)*(l.getLatitude()-lat)+((l.getLongitude()-lon)*(l.getLongitude()-lon)))<d){
 							d = Math.sqrt((l.getLatitude()-lat)*(l.getLatitude()-lat)+((l.getLongitude()-lon)*(l.getLongitude()-lon)));
@@ -122,11 +123,11 @@ public class MainActivity extends Activity {
 						k = source.indexOf(">", k);
 						int k2 = source.indexOf("<", k);
 						String p = source.substring(k+1, k2);
-						int plazas = Integer.parseInt(p);
+						int spots = Integer.parseInt(p);
 						
 						Message msg = handler.obtainMessage();
 						Bundle data = new Bundle();
-						data.putInt("plazas", plazas);
+						data.putInt("spots", spots);
 						data.putString("name", name);
 						data.putDouble("lat", array.getJSONObject(n).getDouble("lat"));
 						data.putDouble("lon", array.getJSONObject(n).getDouble("lon"));
